@@ -4,6 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
     "test": "jest"
   },
   "repository": {
@@ -21,6 +23,8 @@
   },
   "homepage": "https://github.com/Jorge3129/channelify-bot#readme",
   "devDependencies": {
-    "@tsconfig/node18": "^18.2.2"
+    "@tsconfig/node18": "^18.2.2",
+    "tslint": "^6.1.3",
+    "typescript": "^5.2.2"
   }
 }
