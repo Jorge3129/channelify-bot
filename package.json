@@ -1,0 +1,26 @@
+{
+  "name": "channelify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jorge3129/channelify-bot.git"
+  },
+  "keywords": [
+    "Telegram",
+    "Bot"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jorge3129/channelify-bot/issues"
+  },
+  "homepage": "https://github.com/Jorge3129/channelify-bot#readme",
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.2"
+  }
+}
