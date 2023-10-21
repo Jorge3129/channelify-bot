@@ -2,13 +2,15 @@ import { Api, TelegramClient } from "telegram";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { Observable } from "rxjs";
 
-class TelegramCoreApiService {
-  public async createChannel(
-    client: TelegramClient,
-    title: string,
-    about = ""
-  ): Promise<any> {
-    const result: any = await client.invoke(
+type Chat = {
+  id: string;
+};
+
+export class TelegramCoreApiService {
+  constructor(private client: TelegramClient) {}
+
+  public async createChannel(title: string, about = ""): Promise<Chat> {
+    const result: any = await this.client.invoke(
       new Api.channels.CreateChannel({
         title,
         about,
@@ -19,11 +21,8 @@ class TelegramCoreApiService {
     return result.chats[0];
   }
 
-  public async joinChannel(
-    client: TelegramClient,
-    inputChannel: string
-  ): Promise<any> {
-    const result: any = await client.invoke(
+  public async joinChannel(inputChannel: string): Promise<Chat> {
+    const result: any = await this.client.invoke(
       new Api.channels.JoinChannel({
         channel: inputChannel,
       })
@@ -33,7 +32,6 @@ class TelegramCoreApiService {
   }
 
   public getChannelNewMessageUpdates(
-    client: TelegramClient,
     chatId: string
   ): Observable<NewMessageEvent> {
     return new Observable((observer) => {
@@ -41,7 +39,7 @@ class TelegramCoreApiService {
         observer.next(event);
       };
 
-      client.addEventHandler(
+      this.client.addEventHandler(
         handler,
         new NewMessage({
           incoming: true,
@@ -50,6 +48,13 @@ class TelegramCoreApiService {
       );
     });
   }
-}
 
-export const telegramCoreApiService = new TelegramCoreApiService();
+  // TODO
+  public async sendMessage(chatId: string, message: string): Promise<void> {}
+
+  // TODO
+  public async addUserToChannel(
+    user: string,
+    channelId: string
+  ): Promise<void> {}
+}
