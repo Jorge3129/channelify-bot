@@ -1,10 +1,10 @@
-import { SummarizerService } from "../summary/summarizer.service";
 import { TelegramCoreApiService } from "../core-api/telegram-core-api.service";
+import { NewMessageHandler } from "./new-message.handler";
 
 export class CreateChannelService {
   constructor(
     private telegramCoreApi: TelegramCoreApiService,
-    private summarizer: SummarizerService
+    private newMessageHandler: NewMessageHandler
   ) {}
 
   public async createDigestChannel(
@@ -15,23 +15,20 @@ export class CreateChannelService {
       originalChannelUrl
     );
 
-    const newChannel = await this.telegramCoreApi.createChannel(
+    const destinationChannel = await this.telegramCoreApi.createChannel(
       newChannelTitle
     );
 
     // TODO
-    await this.telegramCoreApi.addUserToChannel("userId", newChannel.id);
+    await this.telegramCoreApi.addUserToChannel(
+      "userId",
+      destinationChannel.id
+    );
 
     this.telegramCoreApi
       .getChannelNewMessageUpdates(originalChannel.id)
-      .subscribe(async (event) => {
-        const postText = event.message.message;
-
-        const postSummary = await this.summarizer.getPostSummary(postText);
-
-        console.log({ postSummary });
-
-        await this.telegramCoreApi.sendMessage(newChannel.id, postSummary);
-      });
+      .subscribe((event) =>
+        this.newMessageHandler.handle(event, destinationChannel)
+      );
   }
 }

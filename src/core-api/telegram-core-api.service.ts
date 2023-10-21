@@ -1,15 +1,19 @@
 import { Api, TelegramClient } from "telegram";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { Observable } from "rxjs";
+import bigInt from "big-integer";
+// @ts-ignore
+import randomBigint from "random-bigint";
 
-type Chat = {
+export type TelegramChat = {
   id: string;
+  title: string;
 };
 
 export class TelegramCoreApiService {
   constructor(private client: TelegramClient) {}
 
-  public async createChannel(title: string, about = ""): Promise<Chat> {
+  public async createChannel(title: string, about = ""): Promise<TelegramChat> {
     const result: any = await this.client.invoke(
       new Api.channels.CreateChannel({
         title,
@@ -21,7 +25,7 @@ export class TelegramCoreApiService {
     return result.chats[0];
   }
 
-  public async joinChannel(inputChannel: string): Promise<Chat> {
+  public async joinChannel(inputChannel: string): Promise<TelegramChat> {
     const result: any = await this.client.invoke(
       new Api.channels.JoinChannel({
         channel: inputChannel,
@@ -49,8 +53,22 @@ export class TelegramCoreApiService {
     });
   }
 
-  // TODO
-  public async sendMessage(chatId: string, message: string): Promise<void> {}
+  public async sendMessage(
+    message: string,
+    destinationChatId: string
+  ): Promise<Api.TypeUpdates> {
+    const result = await this.client.invoke(
+      new Api.messages.SendMessage({
+        peer: destinationChatId,
+        message: message,
+        randomId: bigInt(randomBigint(128)),
+        noWebpage: true,
+        noforwards: true,
+      })
+    );
+
+    return result;
+  }
 
   // TODO
   public async addUserToChannel(
