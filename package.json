@@ -7,7 +7,12 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "start:dev": "nodemon src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "mg:new": "npm run typeorm -- migration:create",
+    "mg:gen": "npm run typeorm -- migration:generate -d src/data-source.ts",
+    "mg:up": "npm run typeorm -- migration:run -d src/data-source.ts",
+    "mg:down": "npm run typeorm -- migration:revert -d src/data-source.ts"
   },
   "repository": {
     "type": "git",

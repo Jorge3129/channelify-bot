@@ -1,6 +1,5 @@
 import { NewMessageEvent } from "telegram/events";
 import {
-  TelegramChat,
   TelegramCoreApiService,
   telegramCoreApiService,
 } from "../core-api/telegram-core-api.service";
@@ -17,7 +16,7 @@ export class ChannelPostService {
 
   public async sendPostSummary(
     event: NewMessageEvent,
-    destinationChannel: TelegramChat
+    destinationChannelId: string
   ): Promise<void> {
     const postText = event.message.message;
 
@@ -27,7 +26,7 @@ export class ChannelPostService {
       postSummary,
     });
 
-    await this.telegramCoreApi.sendMessage(postSummary, destinationChannel.id);
+    await this.telegramCoreApi.sendMessage(postSummary, destinationChannelId);
   }
 }
 
