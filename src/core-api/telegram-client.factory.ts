@@ -7,8 +7,24 @@ import path from "path";
 
 const SESSION_PATH = path.join(__dirname, "../../session.txt");
 
-class TelegramClientFactory {
-  public async getClient(): Promise<TelegramClient> {
+export class TelegramClientFactory {
+  private client: TelegramClient | null = null;
+
+  public async initialize(): Promise<TelegramClient> {
+    this.client = await this.createClient();
+
+    return this.client;
+  }
+
+  public getClient(): TelegramClient {
+    if (!this.client) {
+      throw new Error("TelegramClientFactory is unitialized");
+    }
+
+    return this.client;
+  }
+
+  private async createClient(): Promise<TelegramClient> {
     const apiId = parseInt(process.env.TELEGRAM_API_ID ?? "");
     const apiHash = process.env.TELEGRAM_API_HASH ?? "";
     const phoneNumber = process.env.TELEGRAM_PHONE_NUMBER ?? "";

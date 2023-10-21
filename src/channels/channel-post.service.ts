@@ -2,16 +2,20 @@ import { NewMessageEvent } from "telegram/events";
 import {
   TelegramChat,
   TelegramCoreApiService,
+  telegramCoreApiService,
 } from "../core-api/telegram-core-api.service";
-import { SummarizerService } from "../summary/summarizer.service";
+import {
+  SummarizerService,
+  summarizerService,
+} from "../summary/summarizer.service";
 
-export class NewMessageHandler {
+export class ChannelPostService {
   constructor(
     private telegramCoreApi: TelegramCoreApiService,
     private summarizer: SummarizerService
   ) {}
 
-  public async handle(
+  public async sendPostSummary(
     event: NewMessageEvent,
     destinationChannel: TelegramChat
   ): Promise<void> {
@@ -26,3 +30,8 @@ export class NewMessageHandler {
     await this.telegramCoreApi.sendMessage(postSummary, destinationChannel.id);
   }
 }
+
+export const channelPostService = new ChannelPostService(
+  telegramCoreApiService,
+  summarizerService
+);

@@ -4,6 +4,10 @@ import { Observable } from "rxjs";
 import bigInt from "big-integer";
 // @ts-ignore
 import randomBigint from "random-bigint";
+import {
+  TelegramClientFactory,
+  telegramClientFactory,
+} from "./telegram-client.factory";
 
 export type TelegramChat = {
   id: string;
@@ -11,7 +15,11 @@ export type TelegramChat = {
 };
 
 export class TelegramCoreApiService {
-  constructor(private client: TelegramClient) {}
+  constructor(private factory: TelegramClientFactory) {}
+
+  private get client(): TelegramClient {
+    return this.factory.getClient();
+  }
 
   public async createChannel(title: string, about = ""): Promise<TelegramChat> {
     const result: any = await this.client.invoke(
@@ -76,3 +84,7 @@ export class TelegramCoreApiService {
     channelId: string
   ): Promise<void> {}
 }
+
+export const telegramCoreApiService = new TelegramCoreApiService(
+  telegramClientFactory
+);

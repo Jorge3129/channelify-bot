@@ -1,10 +1,13 @@
-import { TelegramCoreApiService } from "../core-api/telegram-core-api.service";
-import { NewMessageHandler } from "./new-message.handler";
+import {
+  TelegramCoreApiService,
+  telegramCoreApiService,
+} from "../core-api/telegram-core-api.service";
+import { ChannelPostService, channelPostService } from "./channel-post.service";
 
 export class CreateChannelService {
   constructor(
     private telegramCoreApi: TelegramCoreApiService,
-    private newMessageHandler: NewMessageHandler
+    private channelPostService: ChannelPostService
   ) {}
 
   public async createDigestChannel(
@@ -28,7 +31,12 @@ export class CreateChannelService {
     this.telegramCoreApi
       .getChannelNewMessageUpdates(originalChannel.id)
       .subscribe((event) =>
-        this.newMessageHandler.handle(event, destinationChannel)
+        this.channelPostService.sendPostSummary(event, destinationChannel)
       );
   }
 }
+
+export const createChannelService = new CreateChannelService(
+  telegramCoreApiService,
+  channelPostService
+);
