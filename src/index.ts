@@ -1,6 +1,6 @@
-import { createChannelService } from "./channels/create-channel.service";
-import { telegramClientFactory } from "./core-api/telegram-client.factory";
 import dataSource from "./data-source";
+import { channelBot } from "./bot/bot";
+import { telegramClientFactory } from "./core-api/telegram-client.factory";
 
 const main = async () => {
   await dataSource.initialize();
@@ -9,10 +9,8 @@ const main = async () => {
   await telegramClientFactory.initialize();
   console.log("TelegramClientFactory initialized");
 
-  await createChannelService.createDigestChannel(
-    "https://t.me/test_news_channel_1",
-    "New DIgest Channel"
-  );
+  channelBot.launch();
+  console.log("Bot launched");
 };
 
 main();
