@@ -48,15 +48,33 @@ Alice -> Bob: hello
 
 ## Activity
 
+Channel creation flow
+
 ```plantuml
-Bob -> Alice : hello
-Alice -> Wonderland: hello
-Wonderland -> next: hello
-next -> Last: hello
-Last -> next: hello
-next -> Wonderland : hello
-Wonderland -> Alice : hello
-Alice -> Bob: hello
+@startuml
+start
+:User sends /createChannel command;
+:Bot receives command;
+:Bot validates command format;
+if (Is channel link valid?) then (yes)
+  :Bot requests to join channel;
+  else (no)
+  :Bot sends error message to user;
+  stop
+endif
+
+:Bot checks for existing digest channel in DB;
+if (Does digest channel exist?) then (yes)
+  :Bot retrieves existing channel info;
+else (no)
+  :Bot creates new digest channel;
+  :Bot updates channel info in DB;
+endif
+
+:Bot sends digest channel link to user;
+stop
+@enduml
+
 ```
 
 ## Interaction
@@ -74,7 +92,7 @@ Alice -> Bob: hello
 
 ## Sequence
 
-### Creating digest channel
+Creating digest channel
 
 ```plantuml
 @startuml
@@ -105,7 +123,7 @@ Bot -> User: Send digest channel link
 
 ```
 
-### Digest post creation
+Digest post creation
 
 ```plantuml
 @startuml
