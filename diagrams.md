@@ -215,12 +215,42 @@ BotController --> CreateChannelService : uses >
 ## Component
 
 ```plantuml
-Bob -> Alice : hello
-Alice -> Wonderland: hello
-Wonderland -> next: hello
-next -> Last: hello
-Last -> next: hello
-next -> Wonderland : hello
-Wonderland -> Alice : hello
-Alice -> Bob: hello
+@startuml
+package "Telegram Digest Bot System" {
+
+    [Bot] as UI
+    [Channel Service] as Core
+    [Summary Service] as SummarySvc
+    [Telegram API] as Telegram
+    [Database] as DB
+    [OpenAI API] as OpenAI
+
+    UI --> Core : send commands
+    Core --> DB : store channels
+    Core --> Telegram : manage channels
+    SummarySvc --> Core : get channel mappings
+    SummarySvc --> Telegram : retrieve posts
+    SummarySvc <--> OpenAI : summary generation
+    SummarySvc --> Telegram : send digest posts
+
+    note right of Core
+        The core service
+    end note
+
+    note top of SummarySvc
+        Service that interfaces with
+        OpenAI to generate summaries.
+    end note
+
+    note "Stores channel mappings" as NoteDB
+    DB .. NoteDB
+    NoteDB .. DB
+
+    note "User interface for sending \ncommands to the system." as NoteBot
+    UI .. NoteBot
+    NoteBot .. UI
+}
+
+@enduml
+
 ```
