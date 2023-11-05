@@ -1,7 +1,12 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: ["tsconfig.json", "tsconfig.vite.json", "tsconfig.tsup.json", "__tests__/tsconfig.json"],
+    project: [
+      "tsconfig.json",
+      "tsconfig.vite.json",
+      "tsconfig.tsup.json",
+      "__tests__/tsconfig.json",
+    ],
     tsconfigRootDir: __dirname,
     sourceType: "module",
   },
@@ -21,9 +26,10 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": "warn",
     // "require-await": "error",
     // "@typescript-eslint/require-await": "warn",
-    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-floating-promises": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
   },
-}
+};

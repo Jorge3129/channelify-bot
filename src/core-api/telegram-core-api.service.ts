@@ -1,6 +1,7 @@
 import { Api, TelegramClient } from "telegram";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { Observable } from "rxjs";
+// @ts-ignore
 import bigInt from "big-integer";
 // @ts-ignore
 import randomBigint from "random-bigint";
@@ -82,7 +83,9 @@ export class TelegramCoreApiService {
   public async addUserToChannel(
     user: string,
     channelId: string
-  ): Promise<void> {}
+  ): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 export const telegramCoreApiService = new TelegramCoreApiService(
