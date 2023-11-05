@@ -151,14 +151,65 @@ Alice -> Bob: hello
 ## Class
 
 ```plantuml
-Bob -> Alice : hello
-Alice -> Wonderland: hello
-Wonderland -> next: hello
-next -> Last: hello
-Last -> next: hello
-next -> Wonderland : hello
-Wonderland -> Alice : hello
-Alice -> Bob: hello
+@startuml
+
+class TelegramClientFactory {
+    -client: TelegramClient | null
+    +initialize(): Promise<TelegramClient>
+    +getClient(): TelegramClient
+    -createClient(): Promise<TelegramClient>
+    -getStringSession(): StringSession
+    -persistStringSession(session: StringSession): void
+}
+
+class TelegramCoreApiService {
+    -factory: TelegramClientFactory
+    -client: TelegramClient
+    +createChannel(title: string, about?: string): Promise<TelegramChat>
+    +joinChannel(inputChannel: string): Promise<TelegramChat>
+    +getChannelNewMessageUpdates(chatId: string): Observable<NewMessageEvent>
+    +sendMessage(message: string, destinationChatId: string): Promise<Api.TypeUpdates>
+    +addUserToChannel(user: string, channelId: string): Promise<void>
+}
+
+class SummarizerService {
+    +getPostSummary(postText: string): Promise<string>
+}
+
+class ChannelPostService {
+    -telegramCoreApi: TelegramCoreApiService
+    -summarizer: SummarizerService
+    +sendPostSummary(event: NewMessageEvent, destinationChannelId: string): Promise<void>
+}
+
+class ChannelMapping {
+    +id: string
+    +sourceChatId: string
+    +destinationId: string
+}
+
+class CreateChannelService {
+    -telegramCoreApi: TelegramCoreApiService
+    -channelPostService: ChannelPostService
+    -channelMappingRepo: Repository<ChannelMapping>
+    +createDigestChannel(sourceChannelUrl: string, newChannelTitle: string): Promise<void>
+    -createChannelOrGetExisting(sourceChatId: string, newChannelTitle: string): Promise<string>
+}
+
+class BotController {
+    -channelService: CreateChannelService
+    +handleCreateChannel(ctx: TelegrafCommandContext): Promise<void>
+}
+
+TelegramCoreApiService --> TelegramClientFactory : uses >
+ChannelPostService --> TelegramCoreApiService : uses >
+ChannelPostService --> SummarizerService : uses >
+CreateChannelService --> TelegramCoreApiService : uses >
+CreateChannelService --> ChannelPostService : uses >
+BotController --> CreateChannelService : uses >
+
+@enduml
+
 ```
 
 ## Component
