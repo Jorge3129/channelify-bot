@@ -52,7 +52,7 @@ frame "NodeJS Server" {
         ....
     ]
 }
- 
+
 frame "Python Server" {
     node node2 [
         ChatGPT Client
@@ -66,23 +66,23 @@ node --> node2
 }
 
   "Secrets" --> "Serverless"
-} 
+}
 
  node -> db
 
 }
 cloud "Telegram" {
-	
+
 }
 
 cloud "ChatGPT" {
-	
+
 }
 "Telegram" <--> node
 "ChatGPT" <-- node2
 
 cloud "Github" {
-	file "Repository" 
+	file "Repository"
   component "Github Actions"
 	"Repository" --> "Github Actions"
 	"Github Actions" --> "Flyctl"
@@ -92,14 +92,24 @@ cloud "Github" {
 ## Statechart
 
 ```plantuml
-Bob -> Alice : hello
-Alice -> Wonderland: hello
-Wonderland -> next: hello
-next -> Last: hello
-Last -> next: hello
-next -> Wonderland : hello
-Wonderland -> Alice : hello
-Alice -> Bob: hello
+START : Greet user. Show help
+START : text, available commands
+
+ADD_CHANNEL : subscribe to a compressed channel
+ADD_CHANNEL --> ASK_KEY : if no key is present
+ADD_CHANNEL --> ADD_EXISTING_CHANNEL : if the channel exists
+ADD_CHANNEL --> CREATE_NEW_CHANNEL : if channel does not exist
+
+ADD_EXISTING_CHANNEL : subscribe the user to
+ADD_EXISTING_CHANNEL : a channel we already have
+
+CREATE_NEW_CHANNEL : send request to channel service
+CREATE_NEW_CHANNEL --> ADD_EXISTING_CHANNEL : when channel created
+
+ASK_KEY : ask for OpenAI Key
+ASK_KEY --> ASK_KEY : validation of key failed
+ASK_KEY --> ADD_CHANNEL : got a valid key
+
 ```
 
 ## Activity
