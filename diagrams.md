@@ -1,3 +1,10 @@
+---
+id: diagrams
+aliases:
+  - Use case
+tags: []
+---
+
 ## Use case
 
 ```plantuml
@@ -23,14 +30,63 @@ User --> UC4 : Selects model
 ## Deployment
 
 ```plantuml
-Bob -> Alice : hello
-Alice -> Wonderland: hello
-Wonderland -> next: hello
-next -> Last: hello
-Last -> next: hello
-next -> Wonderland : hello
-Wonderland -> Alice : hello
-Alice -> Bob: hello
+
+cloud "Fly io"{
+component "Flyctl"
+database db [
+    Postgres
+
+
+]
+
+
+file "Secrets"
+frame "Serverless" {
+frame "NodeJS Server" {
+    node node [
+        Telegram Bot
+        ----
+
+        ....
+
+        ....
+    ]
+}
+ 
+frame "Python Server" {
+    node node2 [
+        ChatGPT Client
+        ----
+
+        ....
+
+        ....
+    ]
+node --> node2
+}
+
+  "Secrets" --> "Serverless"
+} 
+
+ node -> db
+
+}
+cloud "Telegram" {
+	
+}
+
+cloud "ChatGPT" {
+	
+}
+"Telegram" <--> node
+"ChatGPT" <-- node2
+
+cloud "Github" {
+	file "Repository" 
+  component "Github Actions"
+	"Repository" --> "Github Actions"
+	"Github Actions" --> "Flyctl"
+}
 ```
 
 ## Statechart
@@ -80,14 +136,33 @@ stop
 ## Interaction
 
 ```plantuml
-Bob -> Alice : hello
-Alice -> Wonderland: hello
-Wonderland -> next: hello
-next -> Last: hello
-Last -> next: hello
-next -> Wonderland : hello
-Wonderland -> Alice : hello
-Alice -> Bob: hello
+@startuml
+actor "User" as User
+participant "Bot" as Bot
+participant "Original Telegram Channel" as OriginalChannel
+participant "Summary Bot" as SummaryBot
+participant "New Telegram Channel" as NewChannel
+database "Database" as Database
+database "OpenAI API" as OpenAI
+
+User -> Bot: Sends a link to the Telegram channel
+Bot -> Database: Checks the database for the channel's existence
+alt Channel is absent
+    Bot -> SummaryBot: Creates a new channel
+    SummaryBot -> NewChannel: Creates a new channel
+    Database -> Bot: Stores information about the new channel
+else Channel exists
+    Bot -> Database: Retrieves information about the existing channel
+end
+
+User -> Bot: Initiates a command to receive summary information
+Bot -> NewChannel: Sends a command to start receiving summary information
+NewChannel -> SummaryBot: Publishes summary information
+SummaryBot -> OpenAI: Request for summary information
+OpenAI --> SummaryBot: Summary information
+SummaryBot -> NewChannel: Publishes summary information
+NewChannel --> Bot: Notifies about successful creation of summary information
+@enduml
 ```
 
 ## Sequence
