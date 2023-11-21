@@ -4,7 +4,6 @@ import {
   TelegramCoreApiService,
   telegramCoreApiService,
 } from "../core-api/telegram-core-api.service";
-import { ChannelPostService, channelPostService } from "./channel-post.service";
 import { ChannelMapping } from "../channel-mapping/channel-mapping.entity";
 import dataSource from "../data-source";
 import bigInt, { BigInteger } from "big-integer";
@@ -17,7 +16,6 @@ type DigestChannelCreated = {
 export class CreateChannelService {
   constructor(
     private telegramCoreApi: TelegramCoreApiService,
-    private channelPostService: ChannelPostService,
     private channelMappingRepo: Repository<ChannelMapping>
   ) {}
 
@@ -31,12 +29,6 @@ export class CreateChannelService {
     const destinationChannelId = await this.createChannelOrGetExisting(
       sourceChannel
     );
-
-    this.telegramCoreApi
-      .getChannelNewMessageUpdates(sourceChannel.id)
-      .subscribe((event) =>
-        this.channelPostService.sendPostSummary(event, destinationChannelId)
-      );
 
     const inviteLink = await this.telegramCoreApi.getInviteLink(
       destinationChannelId
@@ -73,6 +65,5 @@ export class CreateChannelService {
 
 export const createChannelService = new CreateChannelService(
   telegramCoreApiService,
-  channelPostService,
   dataSource.getRepository(ChannelMapping)
 );
