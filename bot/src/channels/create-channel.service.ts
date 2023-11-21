@@ -32,9 +32,6 @@ export class CreateChannelService {
       newChannelTitle
     );
 
-    // TODO
-    await this.telegramCoreApi.addUserToChannel("userId", destinationChannelId);
-
     this.telegramCoreApi
       .getChannelNewMessageUpdates(sourceChannel.id)
       .subscribe((event) =>

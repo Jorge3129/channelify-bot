@@ -79,14 +79,6 @@ export class TelegramCoreApiService {
     return result;
   }
 
-  // TODO
-  public async addUserToChannel(
-    user: string,
-    channelId: string
-  ): Promise<void> {
-    return Promise.resolve();
-  }
-
   public async getInviteLink(destinationChannelId: string): Promise<string> {
     const result: any = await this.client.invoke(
       new Api.messages.ExportChatInvite({
