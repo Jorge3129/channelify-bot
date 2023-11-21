@@ -12,24 +12,26 @@ export class BotController {
     const input = rest.join(" ");
 
     if (!input) {
-      ctx.reply("Please provide sourceChannelUrl and newChannelName");
+      await ctx.reply("Please provide sourceChannelUrl and newChannelName");
       return;
     }
 
     const [sourceChannelUrl, newChannelName] = input.split(",");
 
     if (!sourceChannelUrl || !newChannelName) {
-      ctx.reply("Please provide both sourceChannelUrl and newChannelName");
+      await ctx.reply(
+        "Please provide both sourceChannelUrl and newChannelName"
+      );
       return;
     }
 
-    await this.channelService.createDigestChannel(
+    const { inviteLink } = await this.channelService.createDigestChannel(
       sourceChannelUrl,
       newChannelName
     );
 
-    ctx.reply(
-      `Created digest channel ${newChannelName} to summarize posts from  ${sourceChannelUrl}`
+    await ctx.reply(
+      `Created digest channel ${inviteLink} to summarize posts from  ${sourceChannelUrl}`
     );
   }
 }

@@ -86,6 +86,17 @@ export class TelegramCoreApiService {
   ): Promise<void> {
     return Promise.resolve();
   }
+
+  public async getInviteLink(destinationChannelId: string): Promise<string> {
+    const result: any = await this.client.invoke(
+      new Api.messages.ExportChatInvite({
+        peer: destinationChannelId,
+        requestNeeded: false,
+      })
+    );
+
+    return result.link;
+  }
 }
 
 export const telegramCoreApiService = new TelegramCoreApiService(
