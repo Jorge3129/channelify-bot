@@ -8,26 +8,15 @@ export class BotController {
   constructor(private channelService: CreateChannelService) {}
 
   public async handleCreateChannel(ctx: TelegrafCommandContext): Promise<void> {
-    const [_command, ...rest] = ctx.message.text.split(" ");
-    const input = rest.join(" ");
+    const [_command, sourceChannelUrl] = ctx.message.text.split(" ");
 
-    if (!input) {
-      await ctx.reply("Please provide sourceChannelUrl and newChannelName");
-      return;
-    }
-
-    const [sourceChannelUrl, newChannelName] = input.split(",");
-
-    if (!sourceChannelUrl || !newChannelName) {
-      await ctx.reply(
-        "Please provide both sourceChannelUrl and newChannelName"
-      );
+    if (!sourceChannelUrl) {
+      await ctx.reply("Please provide sourceChannelUrl");
       return;
     }
 
     const { inviteLink } = await this.channelService.createDigestChannel(
-      sourceChannelUrl,
-      newChannelName
+      sourceChannelUrl
     );
 
     await ctx.reply(

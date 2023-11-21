@@ -1,8 +1,7 @@
 import { Api, TelegramClient } from "telegram";
 import { NewMessage, NewMessageEvent } from "telegram/events";
 import { Observable } from "rxjs";
-// @ts-ignore
-import bigInt from "big-integer";
+import bigInt, { BigInteger } from "big-integer";
 // @ts-ignore
 import randomBigint from "random-bigint";
 import {
@@ -11,7 +10,7 @@ import {
 } from "./telegram-client.factory";
 
 export type TelegramChat = {
-  id: string;
+  id: BigInteger;
   title: string;
 };
 
@@ -45,7 +44,7 @@ export class TelegramCoreApiService {
   }
 
   public getChannelNewMessageUpdates(
-    chatId: string
+    chatId: BigInteger
   ): Observable<NewMessageEvent> {
     return new Observable((observer) => {
       const handler = (event: NewMessageEvent) => {
@@ -64,7 +63,7 @@ export class TelegramCoreApiService {
 
   public async sendMessage(
     message: string,
-    destinationChatId: string
+    destinationChatId: BigInteger
   ): Promise<Api.TypeUpdates> {
     const result = await this.client.invoke(
       new Api.messages.SendMessage({
@@ -79,7 +78,9 @@ export class TelegramCoreApiService {
     return result;
   }
 
-  public async getInviteLink(destinationChannelId: string): Promise<string> {
+  public async getInviteLink(
+    destinationChannelId: BigInteger
+  ): Promise<string> {
     const result: any = await this.client.invoke(
       new Api.messages.ExportChatInvite({
         peer: destinationChannelId,

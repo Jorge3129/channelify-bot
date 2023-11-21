@@ -7,6 +7,7 @@ import {
   SummarizerService,
   summarizerService,
 } from "../summary/summarizer.service";
+import { BigInteger } from "big-integer";
 
 export class ChannelPostService {
   constructor(
@@ -16,7 +17,7 @@ export class ChannelPostService {
 
   public async sendPostSummary(
     event: NewMessageEvent,
-    destinationChannelId: string
+    destinationChannelId: BigInteger
   ): Promise<void> {
     const postText = event.message.message;
 
