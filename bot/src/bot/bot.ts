@@ -19,7 +19,7 @@ channelBot.command("quit", async (ctx) => {
   await ctx.telegram.leaveChat(ctx.message.chat.id);
 });
 
-channelBot.command("c", createTokenCommand);
+channelBot.command("createToken", createTokenCommand);
 
 channelBot.command("createChannel", (ctx) =>
   botController.handleCreateChannel(ctx).catch(async (e) => {
