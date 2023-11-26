@@ -24,6 +24,7 @@ channelBot.command("createToken", createTokenCommand);
 channelBot.command("createChannel", (ctx) =>
   botController.handleCreateChannel(ctx).catch(async (e) => {
     await ctx.reply((e as Error).stack || (e as Error).message);
+    throw e;
   })
 );
 

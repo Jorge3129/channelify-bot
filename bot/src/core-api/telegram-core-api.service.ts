@@ -43,6 +43,15 @@ export class TelegramCoreApiService {
     return result.chats[0];
   }
 
+  public async getChannelMessages(chatId: BigInteger, startDate: Date) {
+    const messages = await this.client.getMessages(chatId, {
+      reverse: true,
+      // offsetDate: startDate.valueOf(),
+    });
+
+    return messages;
+  }
+
   public getChannelNewMessageUpdates(
     chatId: BigInteger
   ): Observable<NewMessageEvent> {

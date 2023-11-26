@@ -7,6 +7,8 @@ import {
 import { ChannelMapping } from "../channel-mapping/channel-mapping.entity";
 import dataSource from "../data-source";
 import bigInt, { BigInteger } from "big-integer";
+import { ChannelPostService, channelPostService } from "./channel-post.service";
+import { summarizerService } from "../summary/summarizer.service";
 
 type DigestChannelCreated = {
   inviteLink: string;
@@ -16,7 +18,8 @@ type DigestChannelCreated = {
 export class CreateChannelService {
   constructor(
     private telegramCoreApi: TelegramCoreApiService,
-    private channelMappingRepo: Repository<ChannelMapping>
+    private channelMappingRepo: Repository<ChannelMapping>,
+    private channelPostService: ChannelPostService
   ) {}
 
   public async createDigestChannel(
@@ -33,6 +36,8 @@ export class CreateChannelService {
     const inviteLink = await this.telegramCoreApi.getInviteLink(
       destinationChannelId
     );
+
+    await summarizerService.foo();
 
     return { inviteLink, destinationChannelId };
   }
@@ -54,10 +59,10 @@ export class CreateChannelService {
       newChannelTitle
     );
 
-    await this.channelMappingRepo.save({
-      sourceChatId: sourceChat.id.toString(),
-      destinationId: newChannel.id.toString(),
-    });
+    // await this.channelMappingRepo.save({
+    //   sourceChatId: sourceChat.id.toString(),
+    //   destinationId: newChannel.id.toString(),
+    // });
 
     return newChannel.id;
   }
@@ -65,5 +70,6 @@ export class CreateChannelService {
 
 export const createChannelService = new CreateChannelService(
   telegramCoreApiService,
-  dataSource.getRepository(ChannelMapping)
+  dataSource.getRepository(ChannelMapping),
+  channelPostService
 );
