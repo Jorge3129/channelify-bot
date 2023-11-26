@@ -1,5 +1,6 @@
 import { NewMessageEvent } from "telegram/events";
 import {
+  TelegramChat,
   TelegramCoreApiService,
   telegramCoreApiService,
 } from "../core-api/telegram-core-api.service";
@@ -14,6 +15,28 @@ export class ChannelPostService {
     private telegramCoreApi: TelegramCoreApiService,
     private summarizer: SummarizerService
   ) {}
+
+  public async publishSummariesForAllChannels() {
+    // const currentDate = new Date();
+    // currentDate.setHours(currentDate.getHours() - 1);
+    // const msgs = await this.telegramCoreApi.getChannelMessages(
+    //   sourceChannel,
+    //   new Date()
+    // );
+    // console.log({ msgs });
+  }
+
+  public async publishSummaryForChannel(sourceChannelId: BigInteger) {
+    // const currentDate = new Date();
+    // currentDate.setHours(currentDate.getHours() - 1);
+
+    const msgs = await this.telegramCoreApi.getChannelMessages(
+      sourceChannelId,
+      new Date()
+    );
+
+    console.log({ msgs });
+  }
 
   public async sendPostSummary(
     event: NewMessageEvent,
