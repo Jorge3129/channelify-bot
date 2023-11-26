@@ -1,0 +1,20 @@
+name: Deploy bot
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - bot/**
+      - .github/workflows/bot.yml
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: cd bot
+      - run: echo ${{ secrets.TG_SESSION }} > session.txt
+      - run: flyctl deploy --remote-only -c fly.prod.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_BOT }}
