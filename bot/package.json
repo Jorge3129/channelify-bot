@@ -7,6 +7,8 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "start:dev": "nodemon src/index.ts",
+    "debug": "nodemon --exec 'node --inspect -r tsconfig-paths/register -r ts-node/register src/index.ts'",
+    "brk": "nodemon --exec 'node --inspect-brk -r tsconfig-paths/register -r ts-node/register src/index.ts'",
     "test": "jest",
     "typeorm": "typeorm-ts-node-commonjs",
     "mg:new": "npm run typeorm -- migration:create",
@@ -52,6 +54,7 @@
     "rxjs": "^7.8.1",
     "telegraf": "^4.14.0",
     "telegram": "^2.19.8",
+    "tsconfig-paths": "^4.2.0",
     "typeorm": "^0.3.17"
   }
 }

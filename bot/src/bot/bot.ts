@@ -1,5 +1,6 @@
 import { Telegraf } from "telegraf";
 import { botController } from "./bot.controller";
+import { createTokenCommand } from "../commands/createToken";
 
 export const channelBot = new Telegraf(process.env.BOT_TOKEN as string);
 
@@ -17,6 +18,8 @@ channelBot.help(async (ctx) => {
 channelBot.command("quit", async (ctx) => {
   await ctx.telegram.leaveChat(ctx.message.chat.id);
 });
+
+channelBot.command("c", createTokenCommand);
 
 channelBot.command("createChannel", (ctx) =>
   botController.handleCreateChannel(ctx).catch(async (e) => {
