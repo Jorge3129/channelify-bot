@@ -1,3 +1,4 @@
+import { channelPostService } from "../channels/channel-post.service";
 import {
   CreateChannelService,
   createChannelService,
@@ -22,6 +23,12 @@ export class BotController {
     await ctx.reply(
       `Created digest channel ${inviteLink} to summarize posts from  ${sourceChannelUrl}`
     );
+  }
+
+  public async handlePublishSummaries(ctx: TelegrafCommandContext) {
+    await channelPostService.publishSummariesForAllChannels();
+
+    await ctx.reply(`Done publishing summaries`);
   }
 }
 

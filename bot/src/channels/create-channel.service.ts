@@ -33,11 +33,19 @@ export class CreateChannelService {
       sourceChannel
     );
 
-    const inviteLink = await this.telegramCoreApi.getInviteLink(
-      destinationChannelId
-    );
+    const inviteLink = await this.telegramCoreApi
+      .getInviteLink(destinationChannelId)
+      .catch((e) => {
+        console.log(e);
+        return "";
+      });
 
-    await summarizerService.foo();
+    // await this.channelPostService
+    //   .publishSummariesForAllChannels()
+    //   .catch((e) => {
+    //     console.log(e);
+    //     return "";
+    //   });
 
     return { inviteLink, destinationChannelId };
   }
@@ -59,10 +67,10 @@ export class CreateChannelService {
       newChannelTitle
     );
 
-    // await this.channelMappingRepo.save({
-    //   sourceChatId: sourceChat.id.toString(),
-    //   destinationId: newChannel.id.toString(),
-    // });
+    await this.channelMappingRepo.save({
+      sourceChatId: sourceChat.id.toString(),
+      destinationId: newChannel.id.toString(),
+    });
 
     return newChannel.id;
   }

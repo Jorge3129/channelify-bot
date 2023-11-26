@@ -8,12 +8,16 @@ import {
   SummarizerService,
   summarizerService,
 } from "../summary/summarizer.service";
-import { BigInteger } from "big-integer";
+import bigInt, { BigInteger } from "big-integer";
+import { Repository } from "typeorm";
+import { ChannelMapping } from "../channel-mapping/channel-mapping.entity";
+import dataSource from "../data-source";
 
 export class ChannelPostService {
   constructor(
     private telegramCoreApi: TelegramCoreApiService,
-    private summarizer: SummarizerService
+    private summarizer: SummarizerService,
+    private channelMappingRepo: Repository<ChannelMapping>
   ) {}
 
   public async publishSummariesForAllChannels() {
@@ -24,18 +28,39 @@ export class ChannelPostService {
     //   new Date()
     // );
     // console.log({ msgs });
+
+    const channelMappings = await this.channelMappingRepo.find();
+
+    for (const channelMapping of channelMappings) {
+      await this.publishSummaryForChannel(
+        bigInt(channelMapping.sourceChatId),
+        channelMapping.destinationId as any
+      );
+    }
   }
 
-  public async publishSummaryForChannel(sourceChannelId: BigInteger) {
-    // const currentDate = new Date();
-    // currentDate.setHours(currentDate.getHours() - 1);
-
-    const msgs = await this.telegramCoreApi.getChannelMessages(
+  public async publishSummaryForChannel(
+    sourceChannelId: BigInteger,
+    destinationChannelId: BigInteger
+  ) {
+    const messages = await this.telegramCoreApi.getChannelMessages(
       sourceChannelId,
       new Date()
     );
 
-    console.log({ msgs });
+    const postContents = [...messages]
+      .filter((message) => !!message.message)
+      .map((message) => message.message);
+
+    const summary = await summarizerService.getSummaryForPosts(postContents);
+
+    if (!summary) {
+      return;
+    }
+
+    console.log({ sourceChannelId, destinationChannelId });
+
+    await this.telegramCoreApi.sendMessage(summary, destinationChannelId);
   }
 
   public async sendPostSummary(
@@ -56,5 +81,6 @@ export class ChannelPostService {
 
 export const channelPostService = new ChannelPostService(
   telegramCoreApiService,
-  summarizerService
+  summarizerService,
+  dataSource.getRepository(ChannelMapping)
 );

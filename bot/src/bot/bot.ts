@@ -28,6 +28,13 @@ channelBot.command("createChannel", (ctx) =>
   })
 );
 
+channelBot.command("publish", (ctx) =>
+  botController.handlePublishSummaries(ctx).catch(async (e) => {
+    await ctx.reply((e as Error).stack || (e as Error).message);
+    // throw e;
+  })
+);
+
 channelBot.on("callback_query", async (ctx) => {
   const data = (<any>ctx.callbackQuery).data;
 
