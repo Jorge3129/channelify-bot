@@ -44,5 +44,6 @@ channelBot.on("callback_query", async (ctx) => {
     await ctx.reply("You chose the Second Option!");
   }
 
+  ctx.setMyCommands;
   await ctx.answerCbQuery();
 });

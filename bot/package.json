@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/app.js",
+    "start": "node dist/index.js",
     "start:dev": "nodemon src/index.ts",
     "debug": "nodemon --exec 'node --inspect -r tsconfig-paths/register -r ts-node/register src/index.ts'",
     "brk": "nodemon --exec 'node --inspect-brk -r tsconfig-paths/register -r ts-node/register src/index.ts'",
@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/Jorge3129/channelify-bot#readme",
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.11",
     "@tsconfig/node18": "^18.2.2",
     "@types/node": "^20.8.7",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
@@ -48,6 +49,7 @@
   "dependencies": {
     "big-integer": "^1.6.51",
     "dotenv": "^16.3.1",
+    "fastify": "^4.24.3",
     "input": "^1.0.1",
     "openai": "^4.20.0",
     "pg": "^8.11.3",

@@ -1,3 +1,4 @@
+import { Markup } from "telegraf";
 import { TelegrafCommandContext } from "../bot/command.context";
 import { GPTToken } from "../entities/gpt-token.entity";
 import { validateGptToken } from "../gpt/gpt";
@@ -30,7 +31,16 @@ export async function createTokenCommand(ctx: TelegrafCommandContext) {
 
   if (await validateGptToken(tokenStr)) {
     await upsert(ctx.from.id, tokenStr);
-    await ctx.reply("Token saved");
+    await ctx.reply(
+      "Token saved",
+      Markup.keyboard([
+        ["button 1", "button 2"], // Row1 with 2 buttons
+        ["button 3", "button 4"], // Row2 with 2 buttons
+        ["button 5", "button 6", "button 7"], // Row3 with 3 buttons
+      ])
+        .oneTime()
+        .resize()
+    );
   } else {
     await ctx.reply("Invalid token");
   }

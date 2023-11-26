@@ -1,4 +1,5 @@
 import asyncio
+import os
 import uvicorn
 
 # These are objects, like singletons:
@@ -27,7 +28,8 @@ async def main():
     telethon_task = asyncio.create_task(log_exception(tg_wrapper.start_polling_channels()))
 
     # Start the FastAPI app
-    config = uvicorn.Config(app=app, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    config = uvicorn.Config(app=app, host='0.0.0.0', port=port)
     server = uvicorn.Server(config)
     await server.serve()
 

@@ -1,13 +1,21 @@
 import os
+import urllib.parse as urlparse
 import psycopg2
+
+url = urlparse.urlparse(os.environ.get('DATABASE_URL'))
+dbname = url.path[1:]
+user = url.username
+password = url.password
+host = url.hostname
+port = url.port
 
 # Database connection parameters
 conn = psycopg2.connect(
-    database=os.environ.get("PG_DATABASE"),
-    user=os.environ.get("PG_USER"),
-    password=os.environ.get("PG_PASSWORD"),
-    host=os.environ.get("PG_HOST"),
-    port=os.environ.get("PG_PORT"),
+    database=os.environ.get("PG_DATABASE") or dbname,
+    user=os.environ.get("PG_USER") or user,
+    password=os.environ.get("PG_PASSWORD") or password,
+    host=os.environ.get("PG_HOST") or host,
+    port=os.environ.get("PG_PORT") or port
 )
 
 
