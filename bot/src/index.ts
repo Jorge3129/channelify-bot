@@ -18,7 +18,7 @@ const main = async () => {
   });
 
   // Declare a route
-  fastify.get("/", async function handler(request, reply) {
+  fastify.get("/", async function handler() {
     return { hello: "world" };
   });
 
