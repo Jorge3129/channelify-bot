@@ -25,9 +25,12 @@ export class CreateChannelService {
   public async createDigestChannel(
     sourceChannelUrl: string
   ): Promise<DigestChannelCreated> {
-    const sourceChannel = await this.telegramCoreApi.joinChannel(
-      sourceChannelUrl
-    );
+    const sourceChannel = await this.telegramCoreApi
+      .joinChannel(sourceChannelUrl)
+      .catch((e) => {
+        console.log(e);
+        throw new Error("Could not join the channel");
+      });
 
     const destinationChannelId = await this.createChannelOrGetExisting(
       sourceChannel

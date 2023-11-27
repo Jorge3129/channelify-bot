@@ -8,6 +8,7 @@ import {
   TelegramClientFactory,
   telegramClientFactory,
 } from "./telegram-client.factory";
+import dayjs from "dayjs";
 
 export type TelegramChat = {
   id: BigInteger;
@@ -44,9 +45,11 @@ export class TelegramCoreApiService {
   }
 
   public async getChannelMessages(chatId: BigInteger, startDate: Date) {
+    const date = dayjs().subtract(1, "days").unix();
+
     const messages = await this.client.getMessages(chatId, {
       reverse: true,
-      // offsetDate: startDate.valueOf(),
+      offsetDate: date,
     });
 
     return messages;

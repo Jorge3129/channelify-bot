@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "big-integer": "^1.6.51",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "input": "^1.0.1",
