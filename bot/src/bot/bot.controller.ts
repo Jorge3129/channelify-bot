@@ -1,14 +1,16 @@
+import { ChannelMapping } from "../channel-mapping/channel-mapping.entity";
 import { channelPostService } from "../channels/channel-post.service";
 import {
   CreateChannelService,
   createChannelService,
 } from "../channels/create-channel.service";
+import dataSource from "../data-source";
 import { TelegrafCommandContext } from "./command.context";
 
 export class BotController {
   constructor(private channelService: CreateChannelService) {}
 
-  public async handleCreateChannel(ctx: TelegrafCommandContext): Promise<void> {
+  public async createChannel(ctx: TelegrafCommandContext): Promise<void> {
     const [_command, sourceChannelUrl] = ctx.message.text.split(" ");
 
     if (!sourceChannelUrl) {
@@ -25,10 +27,16 @@ export class BotController {
     );
   }
 
-  public async handlePublishSummaries(ctx: TelegrafCommandContext) {
+  public async publishSummaries(ctx: TelegrafCommandContext) {
     await channelPostService.publishSummariesForAllChannels();
 
     await ctx.reply(`Done publishing summaries`);
+  }
+
+  public async cleanup(ctx: TelegrafCommandContext) {
+    await dataSource.getRepository(ChannelMapping).delete({});
+
+    await ctx.reply(`Done cleaning up`);
   }
 }
 

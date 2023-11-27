@@ -22,14 +22,21 @@ channelBot.command("quit", async (ctx) => {
 channelBot.command("createToken", createTokenCommand);
 
 channelBot.command("createChannel", (ctx) =>
-  botController.handleCreateChannel(ctx).catch(async (e) => {
+  botController.createChannel(ctx).catch(async (e) => {
     await ctx.reply((e as Error).stack || (e as Error).message);
     throw e;
   })
 );
 
 channelBot.command("publish", (ctx) =>
-  botController.handlePublishSummaries(ctx).catch(async (e) => {
+  botController.publishSummaries(ctx).catch(async (e) => {
+    await ctx.reply((e as Error).stack || (e as Error).message);
+    // throw e;
+  })
+);
+
+channelBot.command("cleanup", (ctx) =>
+  botController.cleanup(ctx).catch(async (e) => {
     await ctx.reply((e as Error).stack || (e as Error).message);
     // throw e;
   })
