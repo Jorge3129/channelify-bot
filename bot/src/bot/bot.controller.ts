@@ -38,6 +38,21 @@ export class BotController {
 
     await ctx.reply(`Done cleaning up`);
   }
+
+  public async list(ctx: TelegrafCommandContext) {
+    const mappings = await dataSource.getRepository(ChannelMapping).find();
+
+    const mappingsTable = mappings
+      .map(
+        ({ sourceChat, sourceChatUrl, destinationChatUrl }, index) =>
+          `${index + 1}. ${
+            sourceChat?.title
+          } (${sourceChatUrl}) -> ${destinationChatUrl}`
+      )
+      .join("\n");
+
+    await ctx.reply(`List:\n${mappingsTable}`);
+  }
 }
 
 export const botController = new BotController(createChannelService);

@@ -9,10 +9,12 @@ import dataSource from "../data-source";
 import bigInt, { BigInteger } from "big-integer";
 import { ChannelPostService, channelPostService } from "./channel-post.service";
 import { summarizerService } from "../summary/summarizer.service";
+import { v4 as uuid } from "uuid";
+import { nanoid } from "nanoid";
 
 type DigestChannelCreated = {
   inviteLink: string;
-  destinationChannelId: BigInteger;
+  // destinationChannelId: BigInteger;
 };
 
 export class CreateChannelService {
@@ -32,50 +34,58 @@ export class CreateChannelService {
         throw new Error("Could not join the channel");
       });
 
-    const destinationChannelId = await this.createChannelOrGetExisting(
-      sourceChannel
+    const channelMapping = await this.createChannelOrGetExisting(
+      sourceChannel,
+      sourceChannelUrl
     );
 
-    const inviteLink = await this.telegramCoreApi
-      .getInviteLink(destinationChannelId)
-      .catch((e) => {
-        console.log(e);
-        return "";
-      });
-
-    // await this.channelPostService
-    //   .publishSummariesForAllChannels()
-    //   .catch((e) => {
-    //     console.log(e);
-    //     return "";
-    //   });
-
-    return { inviteLink, destinationChannelId };
+    return {
+      inviteLink: channelMapping.destinationChatUrl,
+    };
   }
 
   private async createChannelOrGetExisting(
-    sourceChat: TelegramChat
-  ): Promise<BigInteger> {
+    sourceChat: TelegramChat,
+    sourceChatUrl: string
+  ): Promise<ChannelMapping> {
     const existingMapping = await this.channelMappingRepo.findOneBy({
-      sourceChatId: sourceChat.id.toString(),
+      sourceChatUrl: sourceChatUrl,
     });
 
     if (existingMapping) {
-      return bigInt(existingMapping.destinationId);
+      return existingMapping;
     }
 
     const newChannelTitle = `${sourceChat.title} Digest`;
 
     const newChannel = await this.telegramCoreApi.createChannel(
-      newChannelTitle
+      newChannelTitle,
+      (sourceChat.username + "_digest_" + uuid())
+        .replace(/-/gi, "_")
+        .slice(0, 32)
+        .replace(/_$/, "")
     );
 
-    await this.channelMappingRepo.save({
+    // console.log({ newChannel });
+
+    const inviteLink = await this.telegramCoreApi
+      .getInviteLink(newChannel.id)
+      .catch((e) => {
+        console.log(e);
+        return "";
+      });
+
+    const result = await this.channelMappingRepo.save({
       sourceChatId: sourceChat.id.toString(),
+      sourceChatUrl: sourceChatUrl,
+      sourceChat: sourceChat,
       destinationId: newChannel.id.toString(),
+      destinationChat: newChannel,
+      destinationChatUrl: `https://t.me/${newChannel.username}`,
+      inviteLink: inviteLink,
     });
 
-    return newChannel.id;
+    return result;
   }
 }
 

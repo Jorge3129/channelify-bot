@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 export type TelegramChat = {
   id: BigInteger;
   title: string;
+  username: string;
 };
 
 export class TelegramCoreApiService {
@@ -22,8 +23,12 @@ export class TelegramCoreApiService {
     return this.factory.getClient();
   }
 
-  public async createChannel(title: string, about = ""): Promise<TelegramChat> {
-    const result: any = await this.client.invoke(
+  public async createChannel(
+    title: string,
+    username: string,
+    about = ""
+  ): Promise<TelegramChat> {
+    const createResult: any = await this.client.invoke(
       new Api.channels.CreateChannel({
         title,
         about,
@@ -31,7 +36,28 @@ export class TelegramCoreApiService {
       })
     );
 
-    return result.chats[0];
+    const createdChat: TelegramChat = createResult.chats[0];
+
+    console.log({ username });
+
+    await this.client.invoke(
+      new Api.channels.UpdateUsername({
+        channel: createdChat.id,
+        username: username,
+      })
+    );
+
+    const fullChannelResult = await this.client.invoke(
+      new Api.channels.GetFullChannel({
+        channel: username,
+      })
+    );
+
+    const fullChannel = fullChannelResult.chats[0];
+
+    console.log({ fullChannel });
+
+    return fullChannel as any;
   }
 
   public async joinChannel(inputChannel: string): Promise<TelegramChat> {
@@ -44,7 +70,10 @@ export class TelegramCoreApiService {
     return result.chats[0];
   }
 
-  public async getChannelMessages(chatId: BigInteger, startDate: Date) {
+  public async getChannelMessages(
+    chatId: BigInteger | string,
+    startDate: Date
+  ) {
     const date = dayjs().subtract(1, "days").unix();
 
     const messages = await this.client.getMessages(chatId, {
@@ -75,7 +104,7 @@ export class TelegramCoreApiService {
 
   public async sendMessage(
     message: string,
-    destinationChatId: BigInteger
+    destinationChatId: BigInteger | string
   ): Promise<Api.TypeUpdates> {
     const result = await this.client.invoke(
       new Api.messages.SendMessage({

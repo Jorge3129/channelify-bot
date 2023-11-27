@@ -34,6 +34,7 @@
     "@flydotio/dockerfile": "^0.4.11",
     "@tsconfig/node18": "^18.2.2",
     "@types/node": "^20.8.7",
+    "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
     "eslint": "^8.52.0",
@@ -52,6 +53,7 @@
     "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "input": "^1.0.1",
+    "nanoid": "^5.0.3",
     "openai": "^4.20.0",
     "pg": "^8.11.3",
     "random-bigint": "^0.0.1",
@@ -59,6 +61,7 @@
     "telegraf": "^4.14.0",
     "telegram": "^2.19.8",
     "tsconfig-paths": "^4.2.0",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "uuid": "^9.0.1"
   }
 }

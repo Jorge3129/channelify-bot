@@ -24,21 +24,16 @@ export class ChannelPostService {
     const channelMappings = await this.channelMappingRepo.find();
 
     for (const channelMapping of channelMappings) {
-      await this.publishSummaryForChannel(
-        bigInt(channelMapping.sourceChatId),
-        channelMapping.destinationId as any,
-        userId
-      );
+      await this.publishSummaryForChannel(channelMapping, userId);
     }
   }
 
   public async publishSummaryForChannel(
-    sourceChannelId: BigInteger,
-    destinationChannelId: BigInteger,
+    channelMapping: ChannelMapping,
     userId: number
   ) {
     const messages = await this.telegramCoreApi.getChannelMessages(
-      sourceChannelId,
+      channelMapping.sourceChatUrl,
       new Date()
     );
 
@@ -55,9 +50,12 @@ export class ChannelPostService {
       return;
     }
 
-    console.log({ sourceChannelId, destinationChannelId });
+    // console.log({ sourceChannelId, destinationChannelId });
 
-    await this.telegramCoreApi.sendMessage(summary, destinationChannelId);
+    await this.telegramCoreApi.sendMessage(
+      summary,
+      channelMapping.destinationChatUrl
+    );
   }
 
   public async sendPostSummary(
