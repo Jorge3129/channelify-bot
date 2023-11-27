@@ -20,28 +20,22 @@ export class ChannelPostService {
     private channelMappingRepo: Repository<ChannelMapping>
   ) {}
 
-  public async publishSummariesForAllChannels() {
-    // const currentDate = new Date();
-    // currentDate.setHours(currentDate.getHours() - 1);
-    // const msgs = await this.telegramCoreApi.getChannelMessages(
-    //   sourceChannel,
-    //   new Date()
-    // );
-    // console.log({ msgs });
-
+  public async publishSummariesForAllChannels(userId: number) {
     const channelMappings = await this.channelMappingRepo.find();
 
     for (const channelMapping of channelMappings) {
       await this.publishSummaryForChannel(
         bigInt(channelMapping.sourceChatId),
-        channelMapping.destinationId as any
+        channelMapping.destinationId as any,
+        userId
       );
     }
   }
 
   public async publishSummaryForChannel(
     sourceChannelId: BigInteger,
-    destinationChannelId: BigInteger
+    destinationChannelId: BigInteger,
+    userId: number
   ) {
     const messages = await this.telegramCoreApi.getChannelMessages(
       sourceChannelId,
@@ -52,7 +46,10 @@ export class ChannelPostService {
       .filter((message) => !!message.message)
       .map((message) => message.message);
 
-    const summary = await summarizerService.getSummaryForPosts(postContents);
+    const summary = await summarizerService.getSummaryForPosts(
+      postContents,
+      userId
+    );
 
     if (!summary) {
       return;

@@ -28,7 +28,7 @@ export class BotController {
   }
 
   public async publishSummaries(ctx: TelegrafCommandContext) {
-    await channelPostService.publishSummariesForAllChannels();
+    await channelPostService.publishSummariesForAllChannels(ctx.from.id);
 
     await ctx.reply(`Done publishing summaries`);
   }

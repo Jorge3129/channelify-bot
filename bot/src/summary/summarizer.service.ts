@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { getUserToken } from "../commands/getToken";
 
 export class SummarizerService {
   // TODO
@@ -6,8 +7,13 @@ export class SummarizerService {
     return postText.slice(0, 10);
   }
 
-  public async getSummaryForPosts(posts: string[]): Promise<string> {
-    const apiKey = process.env["OPENAI_API_KEY"];
+  public async getSummaryForPosts(
+    posts: string[],
+    userId: number
+  ): Promise<string> {
+    const userKey = await getUserToken(userId);
+
+    const apiKey: string = userKey ?? process.env["OPENAI_API_KEY"] ?? "";
 
     const openai = new OpenAI({
       apiKey: apiKey,
