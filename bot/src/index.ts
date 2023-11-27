@@ -7,6 +7,9 @@ const main = async () => {
   await dataSource.initialize();
   console.log("Data Source initialized");
 
+  await dataSource.runMigrations();
+  console.log("DB Schema updated");
+
   await telegramClientFactory.initialize();
   console.log("TelegramClientFactory initialized");
 
