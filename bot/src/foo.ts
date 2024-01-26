@@ -19,16 +19,18 @@ const $fn = <T, R>(fn: (arg: T) => R) => new Func(fn);
 
 const numToStr = $fn((a: number) => a.toString());
 
-const IOInspect = (a: any): any => {
-  console.log(a);
-  return a;
-};
+const IOInspect =
+  <T>() =>
+  (a: T): T => {
+    console.log(a);
+    return a;
+  };
 
-const foo = numToStr["|>"](IOInspect)
-  ["|>"](Number)
+const foo = numToStr["|>"](IOInspect())
+  ["|>"](parseFloat)
   ["|>"]((x) => x * 2)
-  ["|>"](IOInspect)
+  ["|>"](IOInspect())
   ["|>"]((x) => x * 3)
-  ["|>"](IOInspect);
+  ["|>"](IOInspect());
 
 foo.getFn()(2);
